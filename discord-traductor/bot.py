@@ -1,7 +1,9 @@
+import os
 import discord
 from deep_translator import MyMemoryTranslator
 
-TOKEN = "MTU2NTUyMzgwOTE4MjgxNDM3OQ.Gr2vlB.x3MtUKWurmlTd75Strz3X3g5qLc1O69ujfzS48"
+# Render se encargará de inyectar el token de forma segura sin exponerlo
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 SPANISH_CHANNEL = 1395254621576101968
 INDONESIAN_CHANNEL = 1565528085279936574
@@ -20,7 +22,6 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    # Verificamos si el mensaje tiene texto o archivos adjuntos (imágenes / GIFs)
     tiene_texto = bool(message.content.strip())
     tiene_archivos = len(message.attachments) > 0
 
@@ -28,11 +29,9 @@ async def on_message(message):
         return
 
     try:
-        # Preparamos los archivos adjuntos (imágenes o GIFs) para reenviarlos si los hay
         archivos_para_enviar = []
         if tiene_archivos:
             for attachment in message.attachments:
-                # Convertimos cada archivo adjunto en un archivo listo para enviar a Discord
                 archivo = await attachment.to_file()
                 archivos_para_enviar.append(archivo)
 
@@ -47,7 +46,6 @@ async def on_message(message):
                         files=archivos_para_enviar
                     )
                 elif archivos_para_enviar:
-                    # Si solo mandó la imagen/GIF sin texto
                     await canal_destino.send(
                         f"🇮🇩 **{message.author.display_name}** (Archivo adjunto):", 
                         files=archivos_para_enviar
@@ -64,7 +62,6 @@ async def on_message(message):
                         files=archivos_para_enviar
                     )
                 elif archivos_para_enviar:
-                    # Si solo mandó la imagen/GIF sin texto
                     await canal_destino.send(
                         f"🇪🇸 **{message.author.display_name}** (Archivo adjunto):", 
                         files=archivos_para_enviar
